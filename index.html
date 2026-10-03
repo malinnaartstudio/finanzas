@@ -135,12 +135,6 @@ svg { display: block; flex: none; }
 .sub { display: grid; gap: 1px; margin-top: 8px; font-size: .88rem; color: var(--muted); }
 .sub b { font-weight: 500; color: var(--ink); font-variant-numeric: tabular-nums; }
 .op { padding-top: 30px; font: 500 1.9rem/1 var(--serif); color: var(--muted); }
-.startwrap { display: flex; align-items: baseline; gap: 6px; }
-input.startin {
-  width: 10ch; max-width: 100%; min-width: 5ch; field-sizing: content; padding: 0 2px 2px; border: 0; border-bottom: 1px dashed var(--line-strong); border-radius: 0;
-  background: transparent; font: inherit; font-variant-numeric: tabular-nums;
-}
-input.startin:focus { outline: none; border-bottom: 2px solid var(--accent); }
 .term.result .value {
   display: inline-block; padding: 4px 2px 5px;
   font-size: clamp(2rem, 4.6vw, 2.9rem);
@@ -156,8 +150,11 @@ input.startin:focus { outline: none; border-bottom: 2px solid var(--accent); }
 .sheet-head h2 { margin: 0; font: 600 1.5rem/1.2 var(--serif); }
 .rowgrid {
   display: grid; align-items: center; column-gap: 8px;
-  grid-template-columns: minmax(150px, 1.7fr) minmax(108px, .8fr) 150px 132px 122px 38px;
+  grid-template-columns: minmax(130px, 1.6fr) minmax(96px, .7fr) 116px 150px 128px 116px 36px;
 }
+.rowgrid.tgrid { grid-template-columns: 150px minmax(110px, 1fr) 22px minmax(110px, 1fr) minmax(96px, .7fr) 36px; }
+.c-arrow { justify-content: center; color: var(--muted); }
+select.cell-input { padding-right: 4px; cursor: pointer; text-overflow: ellipsis; }
 .row, .headrow { display: contents; }
 .headrow > div { padding: 6px 4px; font-size: .86rem; color: var(--muted); border-bottom: 1px solid var(--line-strong); }
 .headrow .r { text-align: right; }
@@ -223,6 +220,27 @@ input[type="date"].cell-input { font-size: .95rem; color-scheme: inherit; }
 .authok { color: var(--done); }
 .backup { display: flex; flex-wrap: wrap; gap: 6px 22px; margin: 14px 2px 0; font-size: .92rem; }
 input[type="date"].cell-input, select.btn, input.year { font-size: 1rem; }
+
+/* Рахунки */
+.agrid {
+  display: grid; align-items: center; column-gap: 8px;
+  grid-template-columns: minmax(92px, 1fr) minmax(124px, 1.15fr) repeat(3, minmax(84px, .9fr)) minmax(100px, 1fr) minmax(96px, .95fr);
+}
+.ahead, .arow { display: contents; }
+.ahead > div { padding: 6px 4px; font-size: .86rem; color: var(--muted); border-bottom: 1px solid var(--line-strong); text-align: right; }
+.ahead > div:first-child { text-align: left; }
+.arow > div { min-height: 52px; padding: 6px 4px; border-bottom: 1px solid var(--line); display: flex; align-items: center; justify-content: flex-end; font-variant-numeric: tabular-nums; }
+.arow > .a-name { justify-content: flex-start; font-weight: 600; }
+.arow .k { display: none; }
+.arow .neg { color: var(--out); }
+.arow > .a-start { flex-direction: column; align-items: flex-end; justify-content: center; }
+.startline { display: flex; align-items: center; gap: 4px; width: 100%; }
+.a-start .cell-input { text-align: right; border-color: var(--line); }
+.link.tiny { font-size: .8rem; line-height: 1.2; text-align: right; padding-top: 3px; }
+.arow.total > div { border-bottom: 0; font-weight: 600; }
+.arow .v[id$="-end"] { font-weight: 600; }
+.sheet-head .btn { white-space: nowrap; flex: none; }
+.hint { margin: 10px 4px 14px; color: var(--muted); font-size: .92rem; max-width: 62ch; }
 @media (max-width: 860px) {
   .equation { grid-template-columns: 1fr; row-gap: 18px; }
   .op { display: none; }
@@ -232,22 +250,36 @@ input[type="date"].cell-input, select.btn, input.year { font-size: 1rem; }
   .term .label[data-sign=""]::before { content: ""; }
   .term .sub { grid-column: 1 / -1; grid-template-columns: 1fr 1fr; margin-top: 6px; }
   .term.result .sub { grid-template-columns: 1fr; }
-  .startwrap { justify-content: flex-end; }
-  input.startin { text-align: right; }
   #tStart .sub { grid-template-columns: 1fr; }
 }
-@media (max-width: 720px) {
-  .rowgrid { grid-template-columns: 1fr 1fr 38px; }
+@media (max-width: 960px) {
+  .rowgrid, .rowgrid.tgrid { grid-template-columns: 1fr; }
   .headrow { display: none; }
-  .row { display: grid; grid-column: 1 / -1; grid-template-columns: 1fr 1fr 38px; column-gap: 8px; row-gap: 2px; padding: 10px 0; border-bottom: 1px solid var(--line); grid-template-areas: "name name del" "amt date date" "status rec rec"; }
+  .row { display: grid; grid-column: 1 / -1; grid-template-columns: 1fr 1fr 38px; column-gap: 8px; row-gap: 2px; padding: 10px 0; border-bottom: 1px solid var(--line); grid-template-areas: "name name del" "amt acc acc" "date status status" "rec rec rec"; }
   .row > * { border-bottom: 0; min-height: 0; padding-top: 0; padding-bottom: 0; }
   .row .c-name { grid-area: name; }
   .row .c-del { grid-area: del; }
   .row .c-amt { grid-area: amt; }
+  .row .c-acc { grid-area: acc; }
   .row .c-date { grid-area: date; }
   .row .c-status { grid-area: status; padding-top: 4px; }
   .row .c-rec { grid-area: rec; padding-top: 4px; }
+  .row.xrow { grid-template-columns: 1fr 24px 1fr 38px; grid-template-areas: "from arrow to del" "amt date date date"; row-gap: 6px; }
+  .row .c-from { grid-area: from; }
+  .row .c-arrow { grid-area: arrow; }
+  .row .c-to { grid-area: to; }
   .empty { border-bottom: 0; }
+
+  .agrid { grid-template-columns: 1fr; }
+  .ahead { display: none; }
+  .arow { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 14px; padding: 14px 0; border-bottom: 1px solid var(--line); }
+  .arow > div { border-bottom: 0; min-height: 0; padding: 0; flex-direction: column; align-items: flex-start; justify-content: flex-start; }
+  .arow > .a-name { grid-column: 1 / -1; font: 600 1.1rem/1.2 var(--serif); }
+  .arow .k { display: block; margin-bottom: 2px; font: 400 .86rem/1.3 var(--sans); color: var(--muted); }
+  .arow > .a-start { grid-column: 1 / -1; align-items: stretch; }
+  .link.tiny { text-align: left; }
+  .a-start .cell-input { text-align: left; }
+  .arow.total { border-bottom: 0; padding-bottom: 4px; }
 }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
@@ -297,12 +329,9 @@ input[type="date"].cell-input, select.btn, input.year { font-size: 1rem; }
     <section class="equation" aria-labelledby="eqTitle">
       <h2 class="sr" id="eqTitle">Підсумок місяця</h2>
       <div class="term" id="tStart">
-        <label class="label" for="startIn" data-sign="">На рахунку на початок місяця</label>
-        <div class="value startwrap">
-          <input id="startIn" class="startin" type="text" inputmode="decimal" autocomplete="off">
-          <span aria-hidden="true">€</span>
-        </div>
-        <div class="sub"><span id="startNote"></span><button class="link" type="button" data-act="startauto" id="startAuto" hidden style="justify-self:start">Підтягнути з минулого місяця</button></div>
+        <div class="label" data-sign="">На початок місяця</div>
+        <div class="value" id="vStart"></div>
+        <div class="sub"><span id="startNote"></span></div>
       </div>
       <span class="op" aria-hidden="true">+</span>
       <div class="term">
@@ -323,7 +352,13 @@ input[type="date"].cell-input, select.btn, input.year { font-size: 1rem; }
         <div class="sub"><span>Коли надійдуть усі доходи й будуть оплачені всі витрати місяця</span></div>
       </div>
     </section>
-    <p class="actual">Фактично на рахунку зараз: <b id="vNow"></b> — початок місяця плюс отримане мінус сплачене.</p>
+    <p class="actual">Фактично зараз на всіх рахунках: <b id="vNow"></b> — початок місяця плюс отримане мінус сплачене.</p>
+
+    <section class="sheet" aria-labelledby="accH">
+      <div class="sheet-head"><h2 id="accH">Рахунки</h2></div>
+      <div class="agrid" role="table" aria-labelledby="accH" id="accTable"></div>
+      <p class="hint">Початок кожного рахунку береться з його залишку в попередньому місяці. Його можна виправити вручну, наприклад коли ви перерахували готівку.</p>
+    </section>
 
     <section class="sheet" aria-labelledby="incH">
       <div class="sheet-head">
@@ -343,7 +378,16 @@ input[type="date"].cell-input, select.btn, input.year { font-size: 1rem; }
       <div class="sheet-foot"><span>Разом</span><b id="tExp"></b></div>
     </section>
 
-    <p class="notes">Рядок із позначкою «Щомісяця» сам з'являється в кожному наступному місяці зі статусом «не оплачено» або «очікується». Місяці, які ви вже змінювали, лишаються такими, як ви їх залишили. Початок наступного місяця береться з залишку попереднього, але його можна виправити вручну.</p>
+    <section class="sheet" aria-labelledby="trH">
+      <div class="sheet-head">
+        <h2 id="trH">Перекази між рахунками</h2>
+        <button class="btn primary" type="button" data-act="add-transfer">Додати переказ</button>
+      </div>
+      <div class="rowgrid tgrid" role="table" aria-labelledby="trH" id="trTable"></div>
+      <p class="hint">Переказ — це гроші, які переходять з одного вашого рахунку на інший, наприклад з PayPal на картку або з картки в готівку. Це не дохід і не витрата, тож загальна сума не змінюється.</p>
+    </section>
+
+    <p class="notes">Рядок із позначкою «Щомісяця» сам з'являється в кожному наступному місяці зі статусом «не оплачено» або «очікується». Місяці, які ви вже змінювали, лишаються такими, як ви їх залишили. Кожен дохід і кожна витрата прив'язані до рахунку: картка, готівка або PayPal.</p>
     <div class="backup">
       <button class="link" type="button" data-act="export">Зберегти копію даних у файл</button>
       <button class="link" type="button" data-act="import">Завантажити дані з файлу</button>
@@ -370,6 +414,15 @@ input[type="date"].cell-input, select.btn, input.year { font-size: 1rem; }
   const eur = new Intl.NumberFormat('uk-UA', { style: 'currency', currency: 'EUR', currencyDisplay: 'narrowSymbol' });
   const round2 = (n) => { const v = Math.round((n + Number.EPSILON) * 100) / 100; return v === 0 ? 0 : v; };
   const money = (n) => eur.format(round2(n));
+  const eurSigned = new Intl.NumberFormat('uk-UA', { style: 'currency', currency: 'EUR', currencyDisplay: 'narrowSymbol', signDisplay: 'exceptZero' });
+  const moneyS = (n) => eurSigned.format(round2(n));
+  const ACCS = [{ id: 'card', name: 'Картка' }, { id: 'cash', name: 'Готівка' }, { id: 'paypal', name: 'PayPal' }];
+  const ACC_IDS = ACCS.map((a) => a.id);
+  const ACC_NAME = Object.fromEntries(ACCS.map((a) => [a.id, a.name]));
+  const DEF_ACC = 'card';
+  const byAcc = (f) => Object.fromEntries(ACC_IDS.map((a) => [a, f(a)]));
+  const LISTKEY = { income: 'income', expense: 'expense', transfer: 'transfers' };
+  const listOf = (d, type) => d[LISTKEY[type]];
   const fmtInput = (n) => { if (n === null || n === undefined) return ''; const v = round2(n); return (Number.isInteger(v) ? String(v) : v.toFixed(2)).replace('.', ','); };
   const parseAmt = (s) => {
     const t = String(s).replace(/[\s\u00a0]/g, '').replace(',', '.');
@@ -408,13 +461,14 @@ input[type="date"].cell-input, select.btn, input.year { font-size: 1rem; }
   const invalidate = () => { cache = new Map(); idsMemo = null; };
 
   /* ---------- Модель місяця ---------- */
-  const emptyMonth = () => ({ v: 1, start: null, income: [], expense: [] });
-  const mkItem = (id, name) => ({ id, name, amount: null, date: '', status: 'pending', recurring: false });
+  const emptyMonth = () => ({ v: 2, starts: byAcc(() => null), income: [], expense: [], transfers: [] });
+  const mkItem = (id, name) => ({ id, name, amount: null, date: '', status: 'pending', recurring: false, acc: DEF_ACC });
   function templateMonth() {
     return {
-      v: 1, start: null,
+      v: 2, starts: byAcc(() => null),
       income: ['Зарплата', 'Уроки'].map((n, i) => mkItem('t-in-' + i, n)),
-      expense: ['Deuda', 'Tarjeta', 'Casa alquiler', 'Luz', 'Agua', 'Internet', 'Teléfono'].map((n, i) => mkItem('t-ex-' + i, n))
+      expense: ['Deuda', 'Tarjeta', 'Casa alquiler', 'Luz', 'Agua', 'Internet', 'Teléfono'].map((n, i) => mkItem('t-ex-' + i, n)),
+      transfers: []
     };
   }
   function shiftDate(date, i) {
@@ -425,9 +479,9 @@ input[type="date"].cell-input, select.btn, input.year { font-size: 1rem; }
     return y + '-' + String(mo + 1).padStart(2, '0') + '-' + String(Math.min(Number(m[3]), last)).padStart(2, '0');
   }
   const carryItems = (items, i) => items.filter((x) => x.recurring).map((x) => ({
-    id: x.id, name: x.name, amount: x.amount, date: shiftDate(x.date, i), status: 'pending', recurring: true
+    id: x.id, name: x.name, amount: x.amount, date: shiftDate(x.date, i), status: 'pending', recurring: true, acc: x.acc
   }));
-  const carry = (prev, i) => ({ v: 1, start: null, income: carryItems(prev.income, i), expense: carryItems(prev.expense, i) });
+  const carry = (prev, i) => ({ v: 2, starts: byAcc(() => null), income: carryItems(prev.income, i), expense: carryItems(prev.expense, i), transfers: [] });
 
   function persistedIdxs() {
     if (!idsMemo) idsMemo = [...S.docs.keys()].map(idxOfKey).sort((a, b) => a - b);
@@ -459,38 +513,75 @@ input[type="date"].cell-input, select.btn, input.year { font-size: 1rem; }
     return r;
   }
   const sum = (items, f) => items.reduce((a, x) => ((!f || f(x)) ? a + (x.amount || 0) : a), 0);
-  function startOf(i) {
+  /* Рух коштів за місяць по кожному рахунку */
+  function flows(d) {
+    const r = byAcc(() => ({ inc: 0, incDone: 0, exp: 0, expDone: 0, tin: 0, tout: 0 }));
+    d.income.forEach((x) => { const f = r[x.acc] || r[DEF_ACC]; const v = x.amount || 0; f.inc += v; if (x.status === 'done') f.incDone += v; });
+    d.expense.forEach((x) => { const f = r[x.acc] || r[DEF_ACC]; const v = x.amount || 0; f.exp += v; if (x.status === 'done') f.expDone += v; });
+    d.transfers.forEach((x) => { const v = x.amount || 0; if (r[x.from]) r[x.from].tout += v; if (r[x.to]) r[x.to].tin += v; });
+    return r;
+  }
+  function startsOf(i) {
     const ids = persistedIdxs();
     const d = monthData(i);
     const hasPrev = ids.length > 0 && ids[0] < i;
-    if (d.start !== null && d.start !== undefined) return { value: d.start, auto: false, hasPrev };
-    if (!hasPrev) return { value: 0, auto: true, hasPrev: false };
-    let bal = 0;
-    for (let j = ids[0]; j < i; j++) {
-      const dj = monthData(j);
-      const st = (dj.start !== null && dj.start !== undefined) ? dj.start : bal;
-      bal = st + sum(dj.income) - sum(dj.expense);
+    const out = {};
+    const bal = byAcc(() => 0);
+    if (hasPrev) {
+      for (let j = ids[0]; j < i; j++) {
+        const dj = monthData(j);
+        const fl = flows(dj);
+        ACC_IDS.forEach((a) => {
+          const st = (dj.starts[a] !== null && dj.starts[a] !== undefined) ? dj.starts[a] : bal[a];
+          bal[a] = st + fl[a].inc - fl[a].exp + fl[a].tin - fl[a].tout;
+        });
+      }
     }
-    return { value: bal, auto: true, hasPrev: true };
+    ACC_IDS.forEach((a) => {
+      const manual = d.starts[a] !== null && d.starts[a] !== undefined;
+      out[a] = manual ? { value: d.starts[a], auto: false, hasPrev } : { value: hasPrev ? bal[a] : 0, auto: true, hasPrev };
+    });
+    return out;
   }
   function totals(i) {
     const d = monthData(i);
-    const st = startOf(i);
-    const inc = sum(d.income), incDone = sum(d.income, (x) => x.status === 'done');
-    const exp = sum(d.expense), expDone = sum(d.expense, (x) => x.status === 'done');
-    return { st, inc, incDone, exp, expDone, end: st.value + inc - exp, now: st.value + incDone - expDone };
+    const st = startsOf(i);
+    const fl = flows(d);
+    const T = { per: {}, start: 0, inc: 0, incDone: 0, exp: 0, expDone: 0, net: 0, end: 0, now: 0, hasPrev: st[DEF_ACC].hasPrev };
+    ACC_IDS.forEach((a) => {
+      const f = fl[a], s0 = st[a].value, net = f.tin - f.tout;
+      const p = { start: s0, auto: st[a].auto, hasPrev: st[a].hasPrev, inc: f.inc, exp: f.exp, net,
+        end: s0 + f.inc - f.exp + net, now: s0 + f.incDone - f.expDone + net };
+      T.per[a] = p;
+      T.start += s0; T.inc += f.inc; T.incDone += f.incDone; T.exp += f.exp; T.expDone += f.expDone;
+      T.net += net; T.end += p.end; T.now += p.now;
+    });
+    return T;
   }
 
   function normalizeDoc(raw) {
+    const num = (v) => ((typeof v === 'number' && Number.isFinite(v)) ? v : null);
+    const accOf = (v) => (ACC_IDS.includes(v) ? v : DEF_ACC);
     const items = (arr) => (Array.isArray(arr) ? arr : []).map((x) => ({
       id: String(x && x.id || uid()),
       name: String(x && x.name || ''),
-      amount: (x && typeof x.amount === 'number' && Number.isFinite(x.amount)) ? x.amount : null,
+      amount: num(x && x.amount),
       date: (x && typeof x.date === 'string') ? x.date : '',
       status: (x && x.status === 'done') ? 'done' : 'pending',
-      recurring: !!(x && x.recurring)
+      recurring: !!(x && x.recurring),
+      acc: accOf(x && x.acc)
     }));
-    return { v: 1, start: (raw && typeof raw.start === 'number' && Number.isFinite(raw.start)) ? raw.start : null, income: items(raw && raw.income), expense: items(raw && raw.expense) };
+    const transfers = (Array.isArray(raw && raw.transfers) ? raw.transfers : []).map((x) => ({
+      id: String(x && x.id || uid()),
+      from: ACC_IDS.includes(x && x.from) ? x.from : 'paypal',
+      to: ACC_IDS.includes(x && x.to) ? x.to : DEF_ACC,
+      amount: num(x && x.amount),
+      date: (x && typeof x.date === 'string') ? x.date : ''
+    }));
+    const starts = byAcc(() => null);
+    if (raw && raw.starts && typeof raw.starts === 'object') ACC_IDS.forEach((a) => { starts[a] = num(raw.starts[a]); });
+    else if (raw && num(raw.start) !== null) starts[DEF_ACC] = raw.start; // старий формат: один рахунок = картка
+    return { v: 2, starts, income: items(raw && raw.income), expense: items(raw && raw.expense), transfers };
   }
 
   /* ---------- Зміни й збереження ---------- */
@@ -580,12 +671,19 @@ input[type="date"].cell-input, select.btn, input.year { font-size: 1rem; }
   function pillContent(type, status) {
     return SVG.check + '<span>' + STATUS_TEXT[type][status] + '</span>';
   }
+  function accSelect(cls, value, label) {
+    const sel = h('select', { class: 'cell-input ' + cls, 'aria-label': label });
+    ACCS.forEach((a) => sel.append(h('option', { value: a.id }, a.name)));
+    sel.value = value;
+    return sel;
+  }
   function rowEl(type, it) {
     const nm = it.name || 'Новий рядок';
     const row = h('div', { class: 'row', role: 'row', 'data-id': it.id, 'data-type': type });
     row.append(
       h('div', { class: 'c-name', role: 'cell' }, h('input', { class: 'cell-input f-name', type: 'text', autocomplete: 'off', placeholder: type === 'income' ? 'Джерело доходу' : 'Категорія', value: it.name, 'aria-label': 'Назва: ' + nm })),
       h('div', { class: 'c-amt', role: 'cell' }, h('input', { class: 'cell-input amt f-amt', type: 'text', inputmode: 'decimal', autocomplete: 'off', placeholder: '0', value: fmtInput(it.amount), 'aria-label': 'Сума: ' + nm })),
+      h('div', { class: 'c-acc', role: 'cell' }, accSelect('f-acc', it.acc, 'Рахунок: ' + nm)),
       h('div', { class: 'c-date', role: 'cell' }, h('input', { class: 'cell-input f-date', type: 'date', value: it.date, 'aria-label': (type === 'income' ? 'Дата надходження: ' : 'Дата списання: ') + nm })),
       h('div', { class: 'c-status', role: 'cell' }, h('button', { class: 'pill', type: 'button', 'data-act': 'toggle', 'data-done': it.status === 'done' ? 'true' : 'false', 'aria-label': STATUS_TEXT[type][it.status] + ': ' + nm + '. Натисніть, щоб змінити', html: pillContent(type, it.status) })),
       h('div', { class: 'c-rec', role: 'cell' }, h('label', { class: 'rec' },
@@ -595,27 +693,66 @@ input[type="date"].cell-input, select.btn, input.year { font-size: 1rem; }
     );
     return row;
   }
+  function transferRowEl(it) {
+    const row = h('div', { class: 'row xrow', role: 'row', 'data-id': it.id, 'data-type': 'transfer' });
+    const from = accSelect('f-from', it.from, 'З рахунку');
+    const to = accSelect('f-to', it.to, 'На рахунок');
+    if (it.from === it.to) { from.setAttribute('aria-invalid', 'true'); to.setAttribute('aria-invalid', 'true'); }
+    row.append(
+      h('div', { class: 'c-date', role: 'cell' }, h('input', { class: 'cell-input f-date', type: 'date', value: it.date, 'aria-label': 'Дата переказу' })),
+      h('div', { class: 'c-from', role: 'cell' }, from),
+      h('div', { class: 'c-arrow', role: 'cell', 'aria-hidden': 'true' }, '→'),
+      h('div', { class: 'c-to', role: 'cell' }, to),
+      h('div', { class: 'c-amt', role: 'cell' }, h('input', { class: 'cell-input amt f-amt', type: 'text', inputmode: 'decimal', autocomplete: 'off', placeholder: '0', value: fmtInput(it.amount), 'aria-label': 'Сума переказу' })),
+      h('div', { class: 'c-del', role: 'cell' }, h('button', { class: 'del', type: 'button', 'data-act': 'del', 'aria-label': 'Видалити переказ', html: SVG.x }))
+    );
+    return row;
+  }
+  const TABLES = { income: '#incTable', expense: '#expTable', transfer: '#trTable' };
+  const EMPTY_TEXT = {
+    income: 'Доходів поки немає. Натисніть «Додати дохід».',
+    expense: 'Витрат поки немає. Натисніть «Додати витрату».',
+    transfer: 'Переказів у цьому місяці немає. Натисніть «Додати переказ».'
+  };
   function renderTable(type) {
     const d = monthData(S.cur);
-    const table = $(type === 'income' ? '#incTable' : '#expTable');
-    const items = d[type];
-    const head = h('div', { class: 'headrow', role: 'row' },
-      h('div', { role: 'columnheader' }, type === 'income' ? 'Джерело' : 'Категорія'),
-      h('div', { class: 'r', role: 'columnheader' }, 'Сума'),
-      h('div', { role: 'columnheader' }, type === 'income' ? 'Дата надходження' : 'Дата списання'),
-      h('div', { role: 'columnheader' }, 'Статус'),
-      h('div', { role: 'columnheader' }, 'Повторення'),
-      h('div', { role: 'columnheader' }, h('span', { class: 'sr' }, 'Дія'))
-    );
+    const table = $(TABLES[type]);
+    const items = listOf(d, type);
+    const col = (text, cls) => h('div', { class: cls || null, role: 'columnheader' }, text);
+    const hidden = (text) => h('div', { role: 'columnheader' }, h('span', { class: 'sr' }, text));
+    const head = type === 'transfer'
+      ? h('div', { class: 'headrow', role: 'row' }, col('Дата'), col('З рахунку'), hidden('Напрямок'), col('На рахунок'), col('Сума', 'r'), hidden('Дія'))
+      : h('div', { class: 'headrow', role: 'row' },
+        col(type === 'income' ? 'Джерело' : 'Категорія'), col('Сума', 'r'), col('Рахунок'),
+        col(type === 'income' ? 'Дата надходження' : 'Дата списання'), col('Статус'), col('Повторення'), hidden('Дія'));
     table.replaceChildren(head);
-    if (!items.length) {
-      table.append(h('div', { class: 'empty' }, type === 'income' ? 'Доходів поки немає. Натисніть «Додати дохід».' : 'Витрат поки немає. Натисніть «Додати витрату».'));
-    } else {
-      items.forEach((it) => table.append(rowEl(type, it)));
-    }
+    if (!items.length) table.append(h('div', { class: 'empty' }, EMPTY_TEXT[type]));
+    else items.forEach((it) => table.append(type === 'transfer' ? transferRowEl(it) : rowEl(type, it)));
+  }
+  /* таблиця рахунків: будується один раз, далі оновлюються лише значення */
+  function buildAccounts() {
+    const t = $('#accTable');
+    t.append(h('div', { class: 'ahead', role: 'row' },
+      ...['Рахунок', 'На початок', 'Доходи', 'Витрати', 'Перекази', 'Кінець місяця', 'Зараз'].map((x) => h('div', { role: 'columnheader' }, x))));
+    const cell = (label, id) => h('div', { role: 'cell' }, h('span', { class: 'k' }, label), h('span', { class: 'v', id }));
+    const tail = (key) => [cell('Доходи', key + '-inc'), cell('Витрати', key + '-exp'), cell('Перекази', key + '-net'), cell('Кінець місяця', key + '-end'), cell('Зараз', key + '-now')];
+    ACCS.forEach((a) => {
+      const key = 'a-' + a.id;
+      const input = h('input', { class: 'cell-input amt f-start', type: 'text', inputmode: 'decimal', autocomplete: 'off', placeholder: '0', id: key + '-start', 'data-acc': a.id, 'aria-label': 'На початок місяця: ' + a.name });
+      t.append(h('div', { class: 'arow', role: 'row', 'data-acc': a.id },
+        h('div', { class: 'a-name', role: 'rowheader' }, a.name),
+        h('div', { class: 'a-start', role: 'cell' }, h('span', { class: 'k' }, 'На початок'),
+          h('div', { class: 'startline' }, input, h('span', { 'aria-hidden': 'true' }, '€')),
+          h('button', { class: 'link tiny', type: 'button', 'data-act': 'startauto', 'data-acc': a.id, id: key + '-reset', hidden: true, title: 'Повернути залишок із минулого місяця' }, 'З минулого місяця')),
+        ...tail(key)));
+    });
+    t.append(h('div', { class: 'arow total', role: 'row' },
+      h('div', { class: 'a-name', role: 'rowheader' }, 'Разом'),
+      cell('На початок', 'a-tot-start'), ...tail('a-tot')));
   }
   function updateSummary() {
     const t = totals(S.cur);
+    $('#vStart').textContent = money(t.start);
     $('#vInc').textContent = money(t.inc);
     $('#vIncDone').textContent = money(t.incDone);
     $('#vIncPend').textContent = money(t.inc - t.incDone);
@@ -628,12 +765,25 @@ input[type="date"].cell-input, select.btn, input.year { font-size: 1rem; }
     $('#vNow').textContent = money(t.now);
     $('#tInc').textContent = money(t.inc);
     $('#tExp').textContent = money(t.exp);
-    const startIn = $('#startIn');
-    if (document.activeElement !== startIn) startIn.value = fmtInput(t.st.value);
-    $('#startNote').textContent = t.st.auto
-      ? (t.st.hasPrev ? 'Підтягнуто з минулого місяця' : 'Вкажіть, скільки було на рахунку')
-      : 'Вказано вручну';
-    $('#startAuto').hidden = t.st.auto || !t.st.hasPrev;
+    const manual = ACC_IDS.filter((a) => !t.per[a].auto).length;
+    $('#startNote').textContent = !t.hasPrev ? 'Сума по рахунках. Вкажіть, скільки було на кожному.'
+      : (manual ? 'Сума по рахунках, частину вказано вручну' : 'Сума по рахунках, підтягнуто з минулого місяця');
+    const fill = (key, p, isTotal) => {
+      const q = (x) => $('#' + key + '-' + x);
+      if (isTotal) q('start').textContent = money(p.start);
+      q('inc').textContent = money(p.inc);
+      q('exp').textContent = money(p.exp);
+      q('net').textContent = moneyS(p.net);
+      [['end', p.end], ['now', p.now]].forEach(([x, v]) => { const e = q(x); e.textContent = money(v); e.classList.toggle('neg', round2(v) < 0); });
+    };
+    ACC_IDS.forEach((a) => {
+      const p = t.per[a];
+      const si = $('#a-' + a + '-start');
+      if (document.activeElement !== si) si.value = fmtInput(p.start);
+      $('#a-' + a + '-reset').hidden = p.auto || !p.hasPrev;
+      fill('a-' + a, p, false);
+    });
+    fill('a-tot', t, true);
   }
   function renderAll() {
     const { y, m } = ymOf(S.cur);
@@ -643,6 +793,7 @@ input[type="date"].cell-input, select.btn, input.year { font-size: 1rem; }
     $('#todayBtn').disabled = S.cur === todayIdx;
     renderTable('income');
     renderTable('expense');
+    renderTable('transfer');
     updateSummary();
   }
   const isEditing = () => {
@@ -674,29 +825,31 @@ input[type="date"].cell-input, select.btn, input.year { font-size: 1rem; }
   const relabel = (row, name) => {
     const nm = name || 'Новий рядок';
     const f = (sel, pre) => { const e = $(sel, row); if (e) e.setAttribute('aria-label', pre + nm); };
-    f('.f-name', 'Назва: '); f('.f-amt', 'Сума: '); f('.f-date', 'Дата: '); f('.f-rec', 'Щомісяця: ');
+    f('.f-name', 'Назва: '); f('.f-amt', 'Сума: '); f('.f-date', 'Дата: '); f('.f-rec', 'Щомісяця: '); f('.f-acc', 'Рахунок: ');
     const del = $('.del', row); if (del) del.setAttribute('aria-label', 'Видалити: ' + nm);
   };
 
   app.addEventListener('input', (e) => {
     const t = e.target;
-    if (t.id === 'startIn') {
+    if (t.classList.contains('f-start')) {
       const n = parseAmt(t.value);
       if (Number.isNaN(n)) { t.setAttribute('aria-invalid', 'true'); return; }
       t.removeAttribute('aria-invalid');
-      mutate((d) => { d.start = n; });
+      const a = t.dataset.acc;
+      mutate((d) => { d.starts[a] = n; });
       return;
     }
     const info = rowInfo(t);
     if (!info) return;
+    const find = (d) => listOf(d, info.type).find((x) => x.id === info.id);
     if (t.classList.contains('f-name')) {
-      mutate((d) => { const it = d[info.type].find((x) => x.id === info.id); if (it) it.name = t.value; });
+      mutate((d) => { const it = find(d); if (it) it.name = t.value; });
       relabel(info.row, t.value);
     } else if (t.classList.contains('f-amt')) {
       const n = parseAmt(t.value);
       if (Number.isNaN(n)) { t.setAttribute('aria-invalid', 'true'); return; }
       t.removeAttribute('aria-invalid');
-      mutate((d) => { const it = d[info.type].find((x) => x.id === info.id); if (it) it.amount = n; });
+      mutate((d) => { const it = find(d); if (it) it.amount = n; });
     }
   });
 
@@ -710,18 +863,27 @@ input[type="date"].cell-input, select.btn, input.year { font-size: 1rem; }
     }
     const info = rowInfo(t);
     if (!info) return;
-    if (t.classList.contains('f-date')) mutate((d) => { const it = d[info.type].find((x) => x.id === info.id); if (it) it.date = t.value; });
-    else if (t.classList.contains('f-rec')) mutate((d) => { const it = d[info.type].find((x) => x.id === info.id); if (it) it.recurring = t.checked; });
+    const find = (d) => listOf(d, info.type).find((x) => x.id === info.id);
+    if (t.classList.contains('f-date')) mutate((d) => { const it = find(d); if (it) it.date = t.value; });
+    else if (t.classList.contains('f-rec')) mutate((d) => { const it = find(d); if (it) it.recurring = t.checked; });
+    else if (t.classList.contains('f-acc')) mutate((d) => { const it = find(d); if (it) it.acc = ACC_IDS.includes(t.value) ? t.value : DEF_ACC; });
+    else if (t.classList.contains('f-from') || t.classList.contains('f-to')) {
+      const key = t.classList.contains('f-from') ? 'from' : 'to';
+      mutate((d) => { const it = find(d); if (it) it[key] = t.value; });
+      const it = find(monthData(S.cur));
+      const same = !!it && it.from === it.to;
+      ['.f-from', '.f-to'].forEach((sel) => { const el = $(sel, info.row); if (same) el.setAttribute('aria-invalid', 'true'); else el.removeAttribute('aria-invalid'); });
+    }
   });
 
   app.addEventListener('focusout', (e) => {
     const t = e.target;
-    if (t.id === 'startIn') {
+    if (t.classList && t.classList.contains('f-start')) {
       t.removeAttribute('aria-invalid');
-      t.value = fmtInput(totals(S.cur).st.value);
+      t.value = fmtInput(totals(S.cur).per[t.dataset.acc].start);
     } else if (t.classList && t.classList.contains('f-amt')) {
       const info = rowInfo(t);
-      const it = info && monthData(S.cur)[info.type].find((x) => x.id === info.id);
+      const it = info && listOf(monthData(S.cur), info.type).find((x) => x.id === info.id);
       if (it) { t.removeAttribute('aria-invalid'); t.value = fmtInput(it.amount); }
     }
     setTimeout(() => { if (S.deferred && !isEditing()) { S.deferred = false; renderAll(); } }, 0);
@@ -731,17 +893,20 @@ input[type="date"].cell-input, select.btn, input.year { font-size: 1rem; }
     if (e.key !== 'Enter') return;
     const t = e.target;
     if (t.classList && t.classList.contains('f-name')) { const a = $('.f-amt', t.closest('.row')); if (a) { e.preventDefault(); a.focus(); a.select(); } }
-    else if (t.classList && (t.classList.contains('f-amt') || t.id === 'startIn')) t.blur();
+    else if (t.classList && (t.classList.contains('f-amt') || t.classList.contains('f-start'))) t.blur();
   });
 
   function addRow(type) {
-    const it = { id: uid(), name: '', amount: null, date: '', status: 'pending', recurring: false };
-    mutate((d) => { d[type].push(it); });
+    const it = type === 'transfer'
+      ? { id: uid(), from: 'paypal', to: DEF_ACC, amount: null, date: '' }
+      : { id: uid(), name: '', amount: null, date: '', status: 'pending', recurring: false, acc: DEF_ACC };
+    mutate((d) => { listOf(d, type).push(it); });
     renderTable(type);
-    const rows = $(type === 'income' ? '#incTable' : '#expTable').querySelectorAll('.row');
+    const rows = $(TABLES[type]).querySelectorAll('.row');
     const last = rows[rows.length - 1];
-    if (last) { const n = $('.f-name', last); if (n) n.focus(); }
+    if (last) { const n = $(type === 'transfer' ? '.f-amt' : '.f-name', last); if (n) n.focus(); }
   }
+  const itemLabel = (type, it) => (type === 'transfer' ? 'Переказ ' + ACC_NAME[it.from] + ' → ' + ACC_NAME[it.to] : (it.name || 'без назви'));
 
   document.addEventListener('click', (e) => {
     const b = e.target.closest('[data-act]');
@@ -752,12 +917,17 @@ input[type="date"].cell-input, select.btn, input.year { font-size: 1rem; }
     else if (act === 'today') go(todayIdx);
     else if (act === 'add-income') addRow('income');
     else if (act === 'add-expense') addRow('expense');
-    else if (act === 'startauto') { mutate((d) => { d.start = null; }); $('#startIn').value = fmtInput(totals(S.cur).st.value); }
+    else if (act === 'add-transfer') addRow('transfer');
+    else if (act === 'startauto') {
+      const a = b.dataset.acc;
+      mutate((d) => { d.starts[a] = null; });
+      $('#a-' + a + '-start').value = fmtInput(totals(S.cur).per[a].start);
+    }
     else if (act === 'retry') { clearTimeout(S.timer); S.saveError = false; setSave('saving'); flush(); }
     else if (act === 'toggle') {
       const info = rowInfo(b); if (!info) return;
       let next = 'pending';
-      mutate((d) => { const it = d[info.type].find((x) => x.id === info.id); if (it) { it.status = it.status === 'done' ? 'pending' : 'done'; next = it.status; } });
+      mutate((d) => { const it = listOf(d, info.type).find((x) => x.id === info.id); if (it) { it.status = it.status === 'done' ? 'pending' : 'done'; next = it.status; } });
       b.dataset.done = next === 'done' ? 'true' : 'false';
       b.innerHTML = pillContent(info.type, next);
       const nm = ($('.f-name', info.row).value) || 'Новий рядок';
@@ -765,18 +935,18 @@ input[type="date"].cell-input, select.btn, input.year { font-size: 1rem; }
     }
     else if (act === 'del') {
       const info = rowInfo(b); if (!info) return;
-      const list = monthData(S.cur)[info.type];
+      const list = listOf(monthData(S.cur), info.type);
       const index = list.findIndex((x) => x.id === info.id);
       if (index < 0) return;
       const item = clone(list[index]);
       S.undo = { type: info.type, item, index, idx: S.cur };
-      mutate((d) => { d[info.type] = d[info.type].filter((x) => x.id !== info.id); });
+      mutate((d) => { d[LISTKEY[info.type]] = listOf(d, info.type).filter((x) => x.id !== info.id); });
       renderTable(info.type);
-      showToast('Рядок «' + (item.name || 'без назви') + '» видалено.', true);
+      showToast('Рядок «' + itemLabel(info.type, item) + '» видалено.', true);
     }
     else if (act === 'undo') {
       const u = S.undo; if (!u) return;
-      mutate((d) => { d[u.type].splice(Math.min(u.index, d[u.type].length), 0, u.item); }, u.idx);
+      mutate((d) => { const l = listOf(d, u.type); l.splice(Math.min(u.index, l.length), 0, u.item); }, u.idx);
       S.undo = null;
       $('#toast').hidden = true;
       if (u.idx === S.cur) renderTable(u.type);
@@ -811,6 +981,7 @@ input[type="date"].cell-input, select.btn, input.year { font-size: 1rem; }
   function buildControls() {
     const sel = $('#monthSel');
     MONTHS.forEach((n, i) => sel.append(h('option', { value: String(i) }, n)));
+    buildAccounts();
   }
   function showView(which) {
     $('#loading').hidden = which !== 'loading';
@@ -860,7 +1031,7 @@ input[type="date"].cell-input, select.btn, input.year { font-size: 1rem; }
 
   /* копії даних */
   function exportData() {
-    const out = { app: 'finanzas', v: 1, exported: new Date().toISOString(), months: {} };
+    const out = { app: 'finanzas', v: 2, exported: new Date().toISOString(), months: {} };
     S.docs.forEach((d, k) => { out.months[k] = d; });
     const url = URL.createObjectURL(new Blob([JSON.stringify(out, null, 1)], { type: 'application/json' }));
     const a = document.createElement('a');
